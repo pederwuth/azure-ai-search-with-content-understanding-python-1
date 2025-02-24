@@ -60,6 +60,10 @@ You can run this repo virtually by using GitHub Codespaces, which will open a we
 1. Go to `Access Control (IAM)` in resource, grant yourself role `Search Service Contributor`
 1. Copy `notebooks/.env.sample` to `notebooks/.env`
 1. Fill required information into .env from the resources you created
+1. Login Azure
+   ```shell
+   az login
+   ```
 
 ## Open a Jupyter notebook and follow the step-by-step guidance
 
