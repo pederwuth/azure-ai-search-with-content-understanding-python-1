@@ -49,20 +49,9 @@ interface SearchResult {
   videoUrl?: string // Add videoUrl field
 }
 
+// Update the EnvSettings interface to only include baseUrl
 interface EnvSettings {
   baseUrl: string
-  AZURE_OPENAI_EMBEDDINGS_DEPLOYMENT_NAME: string
-  AZURE_OPENAI_EMBEDDINGS_API_VERSION: string
-  AZURE_OPENAI_COMPLETIONS_API_VERSION: string
-  AZURE_OPENAI_COMPLETIONS_DEPLOYMENT_NAME: string
-  AZURE_OPENAI_ENDPOINT: string
-  AZURE_OPENAI_API_KEY: string
-  AZURE_SEARCH_ENDPOINT: string
-  AZURE_SEARCH_ADMIN_KEY: string
-  INDEX_NAME: string
-  AZURE_AI_SERVICES_ENDPOINT: string
-  AZURE_AI_SERVICES_API_VERSION: string
-  AZURE_AI_SERVICES_API_KEY: string
 }
 
 // Default JSON configuration
@@ -101,20 +90,9 @@ export default function Home() {
   const [isUploading, setIsUploading] = useState<boolean>(false)
   const [jsonEditorContent, setJsonEditorContent] = useState<string>(JSON.stringify(DEFAULT_JSON_CONFIG, null, 2))
   const [isJsonValid, setIsJsonValid] = useState<boolean>(true)
+  // Update the settings state to only include baseUrl
   const [settings, setSettings] = useState<EnvSettings>({
-    baseUrl: "http://127.0.0.1:5000", // Default to your Flask server
-    AZURE_OPENAI_EMBEDDINGS_DEPLOYMENT_NAME: "",
-    AZURE_OPENAI_EMBEDDINGS_API_VERSION: "",
-    AZURE_OPENAI_COMPLETIONS_API_VERSION: "",
-    AZURE_OPENAI_COMPLETIONS_DEPLOYMENT_NAME: "",
-    AZURE_OPENAI_ENDPOINT: "",
-    AZURE_OPENAI_API_KEY: "",
-    AZURE_SEARCH_ENDPOINT: "",
-    AZURE_SEARCH_ADMIN_KEY: "",
-    INDEX_NAME: "",
-    AZURE_AI_SERVICES_ENDPOINT: "",
-    AZURE_AI_SERVICES_API_VERSION: "",
-    AZURE_AI_SERVICES_API_KEY: "",
+    baseUrl: "", // Start with empty string instead of default
   })
   const [isSettingsComplete, setIsSettingsComplete] = useState<boolean>(false)
   const [showSettingsAlert, setShowSettingsAlert] = useState<boolean>(false)
@@ -179,27 +157,11 @@ export default function Home() {
     return String(value)
   }
 
-  // Check if settings are complete
+  // Update the isSettingsComplete check to only verify baseUrl
   useEffect(() => {
-    // Check if all settings are populated
-    const allSettingsComplete =
-      settings.baseUrl.trim() !== "" &&
-      settings.AZURE_OPENAI_EMBEDDINGS_DEPLOYMENT_NAME.trim() !== "" &&
-      settings.AZURE_OPENAI_EMBEDDINGS_API_VERSION.trim() !== "" &&
-      settings.AZURE_OPENAI_COMPLETIONS_API_VERSION.trim() !== "" &&
-      settings.AZURE_OPENAI_COMPLETIONS_DEPLOYMENT_NAME.trim() !== "" &&
-      settings.AZURE_OPENAI_ENDPOINT.trim() !== "" &&
-      settings.AZURE_OPENAI_API_KEY.trim() !== "" &&
-      settings.AZURE_SEARCH_ENDPOINT.trim() !== "" &&
-      settings.AZURE_SEARCH_ADMIN_KEY.trim() !== "" &&
-      settings.INDEX_NAME.trim() !== "" &&
-      settings.AZURE_AI_SERVICES_ENDPOINT.trim() !== "" &&
-      settings.AZURE_AI_SERVICES_API_VERSION.trim() !== "" &&
-      settings.AZURE_AI_SERVICES_API_KEY.trim() !== ""
-
+    // Check if the base URL is populated
+    const allSettingsComplete = settings.baseUrl.trim() !== ""
     setIsSettingsComplete(allSettingsComplete)
-
-    // We no longer auto-complete settings since all fields are required
   }, [settings])
 
   const handleJsonUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -540,44 +502,24 @@ export default function Home() {
     }
   }
 
+  // Update the populateTestConfig function to only set baseUrl
   const populateTestConfig = () => {
     setSettings({
-      baseUrl: "http://127.0.0.1:5000", // Keep the default Flask server
-      AZURE_OPENAI_ENDPOINT: "https://ruibingptv2.openai.azure.com/",
-      AZURE_OPENAI_API_KEY: "",
-      AZURE_OPENAI_COMPLETIONS_DEPLOYMENT_NAME: "my-gpt-4o",
-      AZURE_OPENAI_COMPLETIONS_API_VERSION: "2024-08-01-preview",
-      AZURE_OPENAI_EMBEDDINGS_DEPLOYMENT_NAME: "text-embedding-ada-002",
-      AZURE_OPENAI_EMBEDDINGS_API_VERSION: "2023-05-15",
-      INDEX_NAME: "uitest",
-      AZURE_SEARCH_ENDPOINT: "https://jianmxsearchtest.search.windows.net",
-      AZURE_SEARCH_ADMIN_KEY: "",
-      AZURE_AI_SERVICES_ENDPOINT: "https://video-cu.openai.azure.com/",
-      AZURE_AI_SERVICES_API_VERSION: "2024-12-01-preview",
-      AZURE_AI_SERVICES_API_KEY: "",
+      baseUrl: "http://127.0.0.1:5000", // Set to the default Flask server
     })
 
     toast({
       title: "Test Configuration Loaded",
-      description: "All settings have been populated with test values. Click Save Settings to apply.",
+      description: "Base URL has been set to the default value. Click Save Settings to apply.",
     })
   }
 
-  // Updated saveSettings function to send settings to the backend /config endpoint
+  // Update the saveSettings function to only send baseUrl
   const saveSettings = async () => {
-    // Check if any setting is empty
-    const emptySettings = Object.entries(settings).filter(([key, value]) => {
-      // Skip the baseUrl in the validation
-      if (key === "baseUrl") {
-        return false
-      }
-      return value.trim() === ""
-    })
-
-    if (emptySettings.length > 0) {
+    if (settings.baseUrl.trim() === "") {
       toast({
         title: "Incomplete Settings",
-        description: "All settings fields must be filled in to enable application functionality",
+        description: "Please provide a base URL for the backend server",
         variant: "destructive",
       })
       return
@@ -586,40 +528,10 @@ export default function Home() {
     setIsSavingSettings(true)
 
     try {
-      // Send settings to the backend /config endpoint
-      const configData = {
-        AZURE_OPENAI_EMBEDDINGS_DEPLOYMENT_NAME: settings.AZURE_OPENAI_EMBEDDINGS_DEPLOYMENT_NAME,
-        AZURE_OPENAI_EMBEDDINGS_API_VERSION: settings.AZURE_OPENAI_EMBEDDINGS_API_VERSION,
-        AZURE_OPENAI_ENDPOINT: settings.AZURE_OPENAI_ENDPOINT,
-        AZURE_OPENAI_API_KEY: settings.AZURE_OPENAI_API_KEY,
-        AZURE_OPENAI_COMPLETIONS_DEPLOYMENT_NAME: settings.AZURE_OPENAI_COMPLETIONS_DEPLOYMENT_NAME,
-        AZURE_OPENAI_COMPLETIONS_API_VERSION: settings.AZURE_OPENAI_COMPLETIONS_API_VERSION,
-        AZURE_SEARCH_ENDPOINT: settings.AZURE_SEARCH_ENDPOINT,
-        AZURE_SEARCH_ADMIN_KEY: settings.AZURE_SEARCH_ADMIN_KEY,
-        INDEX_NAME: settings.INDEX_NAME,
-        AZURE_AI_SERVICES_ENDPOINT: settings.AZURE_AI_SERVICES_ENDPOINT,
-        AZURE_AI_SERVICES_API_VERSION: settings.AZURE_AI_SERVICES_API_VERSION,
-        AZURE_AI_SERVICES_API_KEY: settings.AZURE_AI_SERVICES_API_KEY,
-      }
-
-      const response = await fetch(`${settings.baseUrl}/config`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(configData),
-      })
-
-      if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.error || `Server responded with ${response.status}`)
-      }
-
-      const data = await response.json()
-
+      // Just save the settings locally since we're not sending API keys to the backend anymore
       toast({
         title: "Settings Saved",
-        description: data.message || "Your configuration has been updated",
+        description: "Your base URL has been updated",
       })
 
       setIsSettingsOpen(false)
@@ -628,7 +540,7 @@ export default function Home() {
 
       toast({
         title: "Settings Update Failed",
-        description: error instanceof Error ? error.message : "Failed to update settings on the server",
+        description: error instanceof Error ? error.message : "Failed to update settings",
         variant: "destructive",
       })
     } finally {
@@ -681,193 +593,32 @@ export default function Home() {
               <Settings className="h-5 w-5" />
             </Button>
           </DialogTrigger>
-          <DialogContent className="sm:max-w-[600px] max-h-[90vh]">
+          <DialogContent className="sm:max-w-[600px]">
             <DialogHeader>
               <DialogTitle>Application Settings</DialogTitle>
-              <DialogDescription>Configure the environment variables required for the application.</DialogDescription>
+              <DialogDescription>Configure the backend server URL.</DialogDescription>
             </DialogHeader>
-            <ScrollArea className="h-[60vh] pr-4">
-              <div className="grid gap-4 py-4">
-                {/* Test Config Button */}
-                <div className="flex justify-end mb-2">
-                  <Button variant="outline" onClick={populateTestConfig} className="flex items-center gap-2">
-                    <Database className="h-4 w-4" />
-                    Populate Test Config
-                  </Button>
-                </div>
-
-                <h3 className="text-lg font-medium">Basic Settings</h3>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="baseUrl" className="text-right">
-                    Base Backend URL
-                  </Label>
-                  <Input
-                    id="baseUrl"
-                    value={settings.baseUrl}
-                    onChange={(e) => setSettings({ ...settings, baseUrl: e.target.value })}
-                    className="col-span-3"
-                    placeholder="http://127.0.0.1:5000"
-                  />
-                </div>
-
-                <h3 className="text-lg font-medium mt-4">Azure OpenAI Settings</h3>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="AZURE_OPENAI_ENDPOINT" className="text-right">
-                    OpenAI Endpoint
-                  </Label>
-                  <Input
-                    id="AZURE_OPENAI_ENDPOINT"
-                    value={settings.AZURE_OPENAI_ENDPOINT}
-                    onChange={(e) => setSettings({ ...settings, AZURE_OPENAI_ENDPOINT: e.target.value })}
-                    className="col-span-3"
-                    placeholder="https://your-resource.openai.azure.com"
-                  />
-                </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="AZURE_OPENAI_API_KEY" className="text-right">
-                    OpenAI API Key
-                  </Label>
-                  <Input
-                    id="AZURE_OPENAI_API_KEY"
-                    type="password"
-                    value={settings.AZURE_OPENAI_API_KEY}
-                    onChange={(e) => setSettings({ ...settings, AZURE_OPENAI_API_KEY: e.target.value })}
-                    className="col-span-3"
-                    placeholder="Your Azure OpenAI API key"
-                  />
-                </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="AZURE_OPENAI_EMBEDDINGS_DEPLOYMENT_NAME" className="text-right">
-                    Embeddings Deployment
-                  </Label>
-                  <Input
-                    id="AZURE_OPENAI_EMBEDDINGS_DEPLOYMENT_NAME"
-                    value={settings.AZURE_OPENAI_EMBEDDINGS_DEPLOYMENT_NAME}
-                    onChange={(e) =>
-                      setSettings({ ...settings, AZURE_OPENAI_EMBEDDINGS_DEPLOYMENT_NAME: e.target.value })
-                    }
-                    className="col-span-3"
-                    placeholder="e.g., text-embedding-ada-002"
-                  />
-                </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="AZURE_OPENAI_EMBEDDINGS_API_VERSION" className="text-right">
-                    Embeddings API Version
-                  </Label>
-                  <Input
-                    id="AZURE_OPENAI_EMBEDDINGS_API_VERSION"
-                    value={settings.AZURE_OPENAI_EMBEDDINGS_API_VERSION}
-                    onChange={(e) => setSettings({ ...settings, AZURE_OPENAI_EMBEDDINGS_API_VERSION: e.target.value })}
-                    className="col-span-3"
-                    placeholder="e.g., 2023-05-15"
-                  />
-                </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="AZURE_OPENAI_COMPLETIONS_DEPLOYMENT_NAME" className="text-right">
-                    Completions Deployment
-                  </Label>
-                  <Input
-                    id="AZURE_OPENAI_COMPLETIONS_DEPLOYMENT_NAME"
-                    value={settings.AZURE_OPENAI_COMPLETIONS_DEPLOYMENT_NAME}
-                    onChange={(e) =>
-                      setSettings({ ...settings, AZURE_OPENAI_COMPLETIONS_DEPLOYMENT_NAME: e.target.value })
-                    }
-                    className="col-span-3"
-                    placeholder="e.g., gpt-4"
-                  />
-                </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="AZURE_OPENAI_COMPLETIONS_API_VERSION" className="text-right">
-                    Completions API Version
-                  </Label>
-                  <Input
-                    id="AZURE_OPENAI_COMPLETIONS_API_VERSION"
-                    value={settings.AZURE_OPENAI_COMPLETIONS_API_VERSION}
-                    onChange={(e) => setSettings({ ...settings, AZURE_OPENAI_COMPLETIONS_API_VERSION: e.target.value })}
-                    className="col-span-3"
-                    placeholder="e.g., 2023-05-15"
-                  />
-                </div>
-
-                <h3 className="text-lg font-medium mt-4">Azure Search Settings</h3>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="AZURE_SEARCH_ENDPOINT" className="text-right">
-                    Search Endpoint
-                  </Label>
-                  <Input
-                    id="AZURE_SEARCH_ENDPOINT"
-                    value={settings.AZURE_SEARCH_ENDPOINT}
-                    onChange={(e) => setSettings({ ...settings, AZURE_SEARCH_ENDPOINT: e.target.value })}
-                    className="col-span-3"
-                    placeholder="https://your-search-service.search.windows.net"
-                  />
-                </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="AZURE_SEARCH_ADMIN_KEY" className="text-right">
-                    Search Admin Key
-                  </Label>
-                  <Input
-                    id="AZURE_SEARCH_ADMIN_KEY"
-                    type="password"
-                    value={settings.AZURE_SEARCH_ADMIN_KEY}
-                    onChange={(e) => setSettings({ ...settings, AZURE_SEARCH_ADMIN_KEY: e.target.value })}
-                    className="col-span-3"
-                    placeholder="Your Azure Search admin key"
-                  />
-                </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="INDEX_NAME" className="text-right">
-                    Index Name
-                  </Label>
-                  <Input
-                    id="INDEX_NAME"
-                    value={settings.INDEX_NAME}
-                    onChange={(e) => setSettings({ ...settings, INDEX_NAME: e.target.value })}
-                    className="col-span-3"
-                    placeholder="e.g., video-search-index"
-                  />
-                </div>
-
-                <h3 className="text-lg font-medium mt-4">Azure AI Services Settings</h3>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="AZURE_AI_SERVICES_ENDPOINT" className="text-right">
-                    AI Services Endpoint
-                  </Label>
-                  <Input
-                    id="AZURE_AI_SERVICES_ENDPOINT"
-                    value={settings.AZURE_AI_SERVICES_ENDPOINT}
-                    onChange={(e) => setSettings({ ...settings, AZURE_AI_SERVICES_ENDPOINT: e.target.value })}
-                    className="col-span-3"
-                    placeholder="https://your-ai-service.openai.azure.com/"
-                  />
-                </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="AZURE_AI_SERVICES_API_VERSION" className="text-right">
-                    AI Services API Version
-                  </Label>
-                  <Input
-                    id="AZURE_AI_SERVICES_API_VERSION"
-                    value={settings.AZURE_AI_SERVICES_API_VERSION}
-                    onChange={(e) => setSettings({ ...settings, AZURE_AI_SERVICES_API_VERSION: e.target.value })}
-                    className="col-span-3"
-                    placeholder="e.g., 2024-12-01-preview"
-                  />
-                </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="AZURE_AI_SERVICES_API_KEY" className="text-right">
-                    AI Services API Key
-                  </Label>
-                  <Input
-                    id="AZURE_AI_SERVICES_API_KEY"
-                    type="password"
-                    value={settings.AZURE_AI_SERVICES_API_KEY}
-                    onChange={(e) => setSettings({ ...settings, AZURE_AI_SERVICES_API_KEY: e.target.value })}
-                    className="col-span-3"
-                    placeholder="Your Azure AI Services API key"
-                  />
-                </div>
+            <div className="grid gap-4 py-4">
+              <div className="flex justify-end mb-2">
+                <Button variant="outline" onClick={populateTestConfig} className="flex items-center gap-2">
+                  <Database className="h-4 w-4" />
+                  Reset to Default
+                </Button>
               </div>
-            </ScrollArea>
+
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="baseUrl" className="text-right">
+                  Backend Server URL
+                </Label>
+                <Input
+                  id="baseUrl"
+                  value={settings.baseUrl}
+                  onChange={(e) => setSettings({ ...settings, baseUrl: e.target.value })}
+                  className="col-span-3"
+                  placeholder="http://127.0.0.1:5000"
+                />
+              </div>
+            </div>
             <div className="flex justify-end pt-4">
               <Button onClick={saveSettings} disabled={isSavingSettings}>
                 {isSavingSettings ? (
