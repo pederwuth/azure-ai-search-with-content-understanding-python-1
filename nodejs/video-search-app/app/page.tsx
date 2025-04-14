@@ -18,6 +18,7 @@ import {
   UploadIcon,
   RefreshCw,
   PlayCircle,
+  CheckCircle,
 } from "lucide-react"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import {
@@ -35,6 +36,7 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Textarea } from "@/components/ui/textarea"
+import { Progress } from "@/components/ui/progress"
 
 // Update the SearchResult interface to include the videoUrl field
 interface SearchResult {
@@ -53,6 +55,12 @@ interface SearchResult {
 interface EnvSettings {
   baseUrl: string
 }
+
+// Define processing status type
+type ProcessingStatus = "idle" | "creating-analyzer" | "processing-video" | "indexing" | "completed" | "failed"
+
+// Define error source type
+type ErrorSource = "upload" | "search" | "chat" | "settings" | "other"
 
 // Default JSON configuration
 const DEFAULT_JSON_CONFIG = {
@@ -103,9 +111,60 @@ export default function Home() {
   // Add searchType state
   const [searchType, setSearchType] = useState<"similarity" | "hybrid">("similarity")
   const [uploadedVideoUrls, setUploadedVideoUrls] = useState<string[]>([])
+  // Add processing status state
+  const [processingStatus, setProcessingStatus] = useState<ProcessingStatus>("idle")
+  const [processingProgress, setProcessingProgress] = useState<number>(0)
+  const [errorDetails, setErrorDetails] = useState<{
+    visible: boolean
+    message: string
+    source: ErrorSource
+    status?: number
+    details?: string
+    timestamp?: string
+    title?: string
+  }>({
+    visible: false,
+    message: "",
+    source: "other",
+  })
+  // Add this near the other state variables
+  const [isSearching, setIsSearching] = useState<boolean>(false)
 
   const videoRef = useRef<HTMLVideoElement>(null)
   const { toast } = useToast()
+
+  // Simulate progress during processing
+  useEffect(() => {
+    let progressInterval: NodeJS.Timeout | null = null
+
+    if (
+      isUploading &&
+      processingStatus !== "idle" &&
+      processingStatus !== "completed" &&
+      processingStatus !== "failed"
+    ) {
+      // Start at current progress and increment slowly
+      progressInterval = setInterval(() => {
+        setProcessingProgress((prev) => {
+          // Cap progress at 90% until we get confirmation of completion
+          if (prev < 90) {
+            return prev + Math.random() * 2
+          }
+          return prev
+        })
+      }, 1000)
+    } else if (processingStatus === "completed") {
+      setProcessingProgress(100)
+    } else if (processingStatus === "idle" || processingStatus === "failed") {
+      setProcessingProgress(0)
+    }
+
+    return () => {
+      if (progressInterval) {
+        clearInterval(progressInterval)
+      }
+    }
+  }, [isUploading, processingStatus])
 
   // Validate JSON when editor content changes
   useEffect(() => {
@@ -163,6 +222,112 @@ export default function Home() {
     const allSettingsComplete = settings.baseUrl.trim() !== ""
     setIsSettingsComplete(allSettingsComplete)
   }, [settings])
+
+  // Helper function to show error details
+  const showErrorDetails = (error: any, source: ErrorSource, contextData?: any) => {
+    const timestamp = new Date().toISOString()
+
+    // Prepare error details based on the source
+    let title = "Error"
+    let details = {}
+
+    switch (source) {
+      case "upload":
+        title = "Video Processing Error"
+        details = {
+          videoUrl: videoUrl.substring(0, 50) + "...", // Truncate for privacy
+          analyzerId: JSON.parse(jsonEditorContent).analyzerId,
+          timestamp,
+          error:
+            error instanceof Error
+              ? {
+                  name: error.name,
+                  message: error.message,
+                  stack: error.stack,
+                }
+              : String(error),
+        }
+        break
+      case "search":
+        title = "Search Error"
+        details = {
+          query: searchQuery,
+          searchType,
+          timestamp,
+          endpoint: `${settings.baseUrl}/search`,
+          error:
+            error instanceof Error
+              ? {
+                  name: error.name,
+                  message: error.message,
+                  stack: error.stack,
+                }
+              : String(error),
+        }
+        break
+      case "chat":
+        title = "Chat Error"
+        details = {
+          userMessage: contextData?.userMessage || "N/A",
+          timestamp,
+          endpoint: `${settings.baseUrl}/chat`,
+          error:
+            error instanceof Error
+              ? {
+                  name: error.name,
+                  message: error.message,
+                  stack: error.stack,
+                }
+              : String(error),
+        }
+        break
+      case "settings":
+        title = "Settings Error"
+        details = {
+          baseUrl: settings.baseUrl,
+          timestamp,
+          error:
+            error instanceof Error
+              ? {
+                  name: error.name,
+                  message: error.message,
+                  stack: error.stack,
+                }
+              : String(error),
+        }
+        break
+      default:
+        title = "Application Error"
+        details = {
+          timestamp,
+          error:
+            error instanceof Error
+              ? {
+                  name: error.name,
+                  message: error.message,
+                  stack: error.stack,
+                }
+              : String(error),
+        }
+    }
+
+    // Set error details and show dialog
+    setErrorDetails({
+      visible: true,
+      message: error instanceof Error ? error.message : String(error),
+      source,
+      title,
+      details: JSON.stringify(details, null, 2),
+      timestamp,
+    })
+
+    // Also show a toast notification
+    toast({
+      title,
+      description: "See error details for more information",
+      variant: "destructive",
+    })
+  }
 
   const handleJsonUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!isSettingsComplete) {
@@ -227,6 +392,8 @@ export default function Home() {
     }
 
     setIsUploading(true)
+    setProcessingStatus("creating-analyzer")
+    setProcessingProgress(10)
 
     try {
       // Parse the JSON from the editor
@@ -241,6 +408,10 @@ export default function Home() {
       formData.append("jsonFile", jsonFile)
       formData.append("videoUrl", videoUrl)
 
+      // Update status to processing video
+      setProcessingStatus("processing-video")
+      setProcessingProgress(30)
+
       // Send the data to the Flask backend API
       const response = await fetch(`${settings.baseUrl}/upload`, {
         method: "POST",
@@ -252,29 +423,37 @@ export default function Home() {
         throw new Error(errorData.error || `Server responded with ${response.status}`)
       }
 
+      // Update status to indexing
+      setProcessingStatus("indexing")
+      setProcessingProgress(80)
+
       const data = await response.json()
       setJsonData(data)
 
+      // Set status to completed
+      setProcessingStatus("completed")
+      setProcessingProgress(100)
+
       toast({
-        title: "Upload Successful",
-        description: "Your JSON configuration and video URL have been processed by the server.",
+        title: "Processing Successful",
+        description: "Your analyzer has been created and the video has been processed.",
       })
 
       // Add the current video URL to the list of uploaded URLs if it's not already there
       if (!uploadedVideoUrls.includes(videoUrl)) {
         setUploadedVideoUrls((prev) => [...prev, videoUrl])
       }
+
+      // Reset processing status after a delay
+      setTimeout(() => {
+        setProcessingStatus("idle")
+      }, 3000)
     } catch (error) {
       console.error("Upload error:", error)
+      setProcessingStatus("failed")
 
-      toast({
-        title: "Upload Failed",
-        description:
-          error instanceof Error
-            ? error.message
-            : "Failed to connect to the server. Make sure your Flask server is running.",
-        variant: "destructive",
-      })
+      // Show detailed error information
+      showErrorDetails(error, "upload")
     } finally {
       setIsUploading(false)
     }
@@ -314,6 +493,9 @@ export default function Home() {
     }
 
     if (searchQuery.trim() === "") return
+
+    // Set searching state to true at the beginning
+    setIsSearching(true)
 
     try {
       setSearchResults([]) // Clear previous results
@@ -373,11 +555,12 @@ export default function Home() {
       }
     } catch (error) {
       console.error("Search error:", error)
-      toast({
-        title: "Search Failed",
-        description: error instanceof Error ? error.message : "Failed to retrieve search results",
-        variant: "destructive",
-      })
+
+      // Show detailed error information
+      showErrorDetails(error, "search")
+    } finally {
+      // Set searching state back to false when done
+      setIsSearching(false)
     }
   }
 
@@ -492,11 +675,8 @@ export default function Home() {
       }
       setChatMessages((prevMessages) => [...prevMessages, errorMessage])
 
-      toast({
-        title: "Chat Failed",
-        description: error instanceof Error ? error.message : "Failed to get a response from the AI",
-        variant: "destructive",
-      })
+      // Show detailed error information
+      showErrorDetails(error, "chat", { userMessage: currentInput })
     } finally {
       setIsChatLoading(false)
     }
@@ -538,11 +718,8 @@ export default function Home() {
     } catch (error) {
       console.error("Settings error:", error)
 
-      toast({
-        title: "Settings Update Failed",
-        description: error instanceof Error ? error.message : "Failed to update settings",
-        variant: "destructive",
-      })
+      // Show detailed error information
+      showErrorDetails(error, "settings")
     } finally {
       setIsSavingSettings(false)
     }
@@ -560,6 +737,29 @@ export default function Home() {
     const minutes = Math.floor(totalSeconds / 60)
     const seconds = totalSeconds % 60
     return `${minutes}:${seconds.toString().padStart(2, "0")}`
+  }
+
+  // Get status message based on processing status
+  const getProcessingStatusMessage = () => {
+    switch (processingStatus) {
+      case "creating-analyzer":
+        return "Creating analyzer..."
+      case "processing-video":
+        return "Processing video..."
+      case "indexing":
+        return "Indexing content..."
+      case "completed":
+        return "Processing completed!"
+      case "failed":
+        return "Processing failed"
+      default:
+        return ""
+    }
+  }
+
+  // Get error dialog title based on error source
+  const getErrorDialogTitle = () => {
+    return errorDetails.title || "Error Details"
   }
 
   return (
@@ -656,6 +856,81 @@ export default function Home() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Error Details Dialog */}
+      <Dialog
+        open={errorDetails.visible}
+        onOpenChange={(open) => setErrorDetails((prev) => ({ ...prev, visible: open }))}
+      >
+        <DialogContent className="sm:max-w-[700px] max-h-[80vh] overflow-hidden">
+          <DialogHeader>
+            <DialogTitle className="text-destructive flex items-center">
+              <AlertCircle className="h-5 w-5 mr-2" />
+              {getErrorDialogTitle()}
+            </DialogTitle>
+            <DialogDescription>
+              {errorDetails.source === "upload" && "An error occurred while processing the video."}
+              {errorDetails.source === "search" && "An error occurred while searching for video content."}
+              {errorDetails.source === "chat" && "An error occurred while communicating with the AI."}
+              {errorDetails.source === "settings" && "An error occurred while saving settings."}
+              {errorDetails.source === "other" && "An error occurred in the application."}
+              {" The details below may help with troubleshooting."}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4 overflow-y-auto pr-2" style={{ maxHeight: "calc(80vh - 200px)" }}>
+            <div className="space-y-2">
+              <h4 className="font-medium">Error Message</h4>
+              <div className="p-2 bg-slate-100 rounded-md text-sm">{errorDetails.message}</div>
+            </div>
+
+            {errorDetails.timestamp && (
+              <div className="space-y-2">
+                <h4 className="font-medium">Timestamp</h4>
+                <div className="p-2 bg-slate-100 rounded-md text-sm">{errorDetails.timestamp}</div>
+              </div>
+            )}
+
+            {errorDetails.details && (
+              <div className="space-y-2">
+                <h4 className="font-medium">Debug Details</h4>
+                <div className="relative">
+                  <pre className="p-2 bg-slate-100 rounded-md text-xs whitespace-pre-wrap w-full">
+                    {errorDetails.details}
+                  </pre>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="absolute top-2 right-2"
+                    onClick={() => {
+                      navigator.clipboard.writeText(errorDetails.details || "")
+                      toast({
+                        title: "Copied",
+                        description: "Error details copied to clipboard",
+                      })
+                    }}
+                  >
+                    Copy
+                  </Button>
+                </div>
+              </div>
+            )}
+          </div>
+          <div className="flex justify-end gap-2 pt-2 border-t">
+            <Button variant="outline" onClick={() => setErrorDetails((prev) => ({ ...prev, visible: false }))}>
+              Close
+            </Button>
+            <Button
+              variant="default"
+              onClick={() => {
+                setErrorDetails((prev) => ({ ...prev, visible: false }))
+                setIsSettingsOpen(true)
+              }}
+            >
+              Check Settings
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       {/* Combined Video and JSON Config Card */}
       <Card className="mb-6">
@@ -836,7 +1111,29 @@ export default function Home() {
             </div>
           </div>
         </CardContent>
-        <CardFooter className="flex justify-center border-t pt-6">
+        <CardFooter className="flex flex-col justify-center border-t pt-6">
+          {/* Processing Status Indicator */}
+          {processingStatus !== "idle" && (
+            <div className="w-full mb-4">
+              <div className="flex justify-between items-center mb-2">
+                <span className="text-sm font-medium">{getProcessingStatusMessage()}</span>
+                {processingStatus === "completed" && <CheckCircle className="h-5 w-5 text-green-500" />}
+                {processingStatus === "failed" && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="text-destructive hover:text-destructive hover:bg-red-50 p-0 h-auto"
+                    onClick={() => setErrorDetails((prev) => ({ ...prev, visible: true }))}
+                  >
+                    <AlertCircle className="h-5 w-5 mr-1" />
+                    View Error Details
+                  </Button>
+                )}
+              </div>
+              <Progress value={processingProgress} className="h-2 w-full" />
+            </div>
+          )}
+
           <Button
             onClick={handleCombinedUpload}
             disabled={!isJsonValid || !videoUrl || isUploading || !isSettingsComplete}
@@ -846,12 +1143,12 @@ export default function Home() {
             {isUploading ? (
               <>
                 <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                Uploading...
+                Processing...
               </>
             ) : (
               <>
-                <Upload className="mr-2 h-5 w-5" />
-                Upload Configuration
+                <PlayCircle className="mr-2 h-5 w-5" />
+                Create Analyzer and Process Video
               </>
             )}
           </Button>
@@ -872,11 +1169,20 @@ export default function Home() {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="flex-1"
-                  disabled={!isSettingsComplete}
+                  disabled={!isSettingsComplete || isSearching}
                 />
-                <Button type="submit" disabled={!isSettingsComplete}>
-                  <Search className="h-4 w-4 mr-2" />
-                  Search
+                <Button type="submit" disabled={!isSettingsComplete || isSearching}>
+                  {isSearching ? (
+                    <>
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                      Searching...
+                    </>
+                  ) : (
+                    <>
+                      <Search className="h-4 w-4 mr-2" />
+                      Search
+                    </>
+                  )}
                 </Button>
               </div>
               <div className="flex items-center space-x-4 text-sm">
@@ -889,8 +1195,11 @@ export default function Home() {
                     checked={searchType === "similarity"}
                     onChange={() => setSearchType("similarity")}
                     className="h-4 w-4"
+                    disabled={isSearching}
                   />
-                  <label htmlFor="similarity">Similarity Search</label>
+                  <label htmlFor="similarity" className={isSearching ? "text-slate-400" : ""}>
+                    Similarity Search
+                  </label>
                 </div>
                 <div className="flex items-center space-x-2">
                   <input
@@ -901,8 +1210,11 @@ export default function Home() {
                     checked={searchType === "hybrid"}
                     onChange={() => setSearchType("hybrid")}
                     className="h-4 w-4"
+                    disabled={isSearching}
                   />
-                  <label htmlFor="hybrid">Hybrid Search</label>
+                  <label htmlFor="hybrid" className={isSearching ? "text-slate-400" : ""}>
+                    Hybrid Search
+                  </label>
                 </div>
               </div>
             </form>
@@ -1025,4 +1337,3 @@ export default function Home() {
     </main>
   )
 }
-
