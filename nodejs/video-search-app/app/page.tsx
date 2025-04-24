@@ -62,6 +62,18 @@ type ProcessingStatus = "idle" | "creating-analyzer" | "processing-video" | "ind
 // Define error source type
 type ErrorSource = "upload" | "search" | "chat" | "settings" | "other"
 
+// Define job status type for async processing
+type JobStatus = "pending" | "processing" | "indexing" | "completed" | "failed"
+
+// Interface for job status response
+interface JobStatusResponse {
+  status: JobStatus
+  progress?: number
+  result?: any
+  error?: string
+  message?: string
+}
+
 // Default JSON configuration
 const DEFAULT_JSON_CONFIG = {
   analyzerId: "video_cu_analyzer",
@@ -130,41 +142,22 @@ export default function Home() {
   // Add this near the other state variables
   const [isSearching, setIsSearching] = useState<boolean>(false)
 
+  // Add state for job tracking
+  const [currentJobId, setCurrentJobId] = useState<string | null>(null)
+  const [pollingInterval, setPollingInterval] = useState<NodeJS.Timeout | null>(null)
+  const [jobStatusMessage, setJobStatusMessage] = useState<string>("")
+
   const videoRef = useRef<HTMLVideoElement>(null)
   const { toast } = useToast()
 
-  // Simulate progress during processing
+  // Clear polling interval when component unmounts
   useEffect(() => {
-    let progressInterval: NodeJS.Timeout | null = null
-
-    if (
-      isUploading &&
-      processingStatus !== "idle" &&
-      processingStatus !== "completed" &&
-      processingStatus !== "failed"
-    ) {
-      // Start at current progress and increment slowly
-      progressInterval = setInterval(() => {
-        setProcessingProgress((prev) => {
-          // Cap progress at 90% until we get confirmation of completion
-          if (prev < 90) {
-            return prev + Math.random() * 2
-          }
-          return prev
-        })
-      }, 1000)
-    } else if (processingStatus === "completed") {
-      setProcessingProgress(100)
-    } else if (processingStatus === "idle" || processingStatus === "failed") {
-      setProcessingProgress(0)
-    }
-
     return () => {
-      if (progressInterval) {
-        clearInterval(progressInterval)
+      if (pollingInterval) {
+        clearInterval(pollingInterval)
       }
     }
-  }, [isUploading, processingStatus])
+  }, [pollingInterval])
 
   // Validate JSON when editor content changes
   useEffect(() => {
@@ -367,6 +360,162 @@ export default function Home() {
     }
   }
 
+  // Function to check job status
+  const checkJobStatus = async (jobId: string) => {
+    try {
+      // Call the status endpoint with the job ID
+      const response = await fetch(`${settings.baseUrl}/upload/status/${jobId}`)
+
+      if (!response.ok) {
+        throw new Error(`Server responded with ${response.status}`)
+      }
+
+      const statusData: JobStatusResponse = await response.json()
+
+      // Update UI based on job status
+      switch (statusData.status) {
+        case "pending":
+          setProcessingStatus("creating-analyzer")
+          setProcessingProgress(statusData.progress || 10)
+          setJobStatusMessage("Waiting to start processing...")
+          break
+
+        case "processing":
+          setProcessingStatus("processing-video")
+          setProcessingProgress(statusData.progress || 30)
+          setJobStatusMessage("Processing video...")
+          break
+
+        case "indexing":
+          setProcessingStatus("indexing")
+          setProcessingProgress(statusData.progress || 80)
+          setJobStatusMessage("Indexing content...")
+          break
+
+        case "completed":
+          // Job completed successfully
+          setProcessingStatus("completed")
+          setProcessingProgress(100)
+          setJobStatusMessage("Processing completed!")
+
+          // Clear the polling interval
+          if (pollingInterval) {
+            clearInterval(pollingInterval)
+            setPollingInterval(null)
+          }
+
+          // Set the job data
+          if (statusData.result) {
+            setJsonData(statusData.result)
+          }
+
+          // Add the current video URL to the list of uploaded URLs if it's not already there
+          if (!uploadedVideoUrls.includes(videoUrl)) {
+            setUploadedVideoUrls((prev) => [...prev, videoUrl])
+          }
+
+          toast({
+            title: "Processing Successful",
+            description: "Your analyzer has been created and the video has been processed.",
+          })
+
+          // Reset job ID and status after a delay
+          setTimeout(() => {
+            setCurrentJobId(null)
+            setProcessingStatus("idle")
+            setJobStatusMessage("")
+          }, 3000)
+
+          // Return true to indicate we should stop polling
+          return true
+          break
+
+        case "failed":
+          // Job failed
+          setProcessingStatus("failed")
+          setProcessingProgress(0)
+          setJobStatusMessage("Processing failed")
+
+          // Clear the polling interval
+          if (pollingInterval) {
+            clearInterval(pollingInterval)
+            setPollingInterval(null)
+          }
+
+          // Show error details
+          showErrorDetails(new Error(statusData.error || "Unknown error during processing"), "upload")
+
+          // Reset job ID
+          setCurrentJobId(null)
+
+          // Return true to indicate we should stop polling
+          return true
+          break
+
+        case "cancelled":
+          // Job was cancelled
+          setProcessingStatus("idle")
+          setProcessingProgress(0)
+          setJobStatusMessage("Processing cancelled")
+
+          // Clear the polling interval
+          if (pollingInterval) {
+            clearInterval(pollingInterval)
+            setPollingInterval(null)
+          }
+
+          // Reset job ID
+          setCurrentJobId(null)
+
+          // Return true to indicate we should stop polling
+          return true
+          break
+      }
+
+      // Return false to indicate we should continue polling
+      return false
+    } catch (error) {
+      console.error("Error checking job status:", error)
+
+      // Don't stop polling on network errors, just log them
+      // This allows temporary network issues to recover
+      console.log("Will retry status check...")
+      return false
+    }
+  }
+
+  // New function to start polling for job status
+  const startPollingJobStatus = (jobId: string) => {
+    // Clear any existing polling interval
+    if (pollingInterval) {
+      clearInterval(pollingInterval)
+      setPollingInterval(null)
+    }
+
+    // Set the current job ID
+    setCurrentJobId(jobId)
+
+    // Check status immediately
+    checkJobStatus(jobId)
+
+    // Then set up polling every 5 seconds
+    const interval = setInterval(async () => {
+      try {
+        // If checkJobStatus returns true, we should stop polling
+        const shouldStopPolling = await checkJobStatus(jobId)
+        if (shouldStopPolling) {
+          clearInterval(interval)
+          setPollingInterval(null)
+        }
+      } catch (error) {
+        console.error("Error in polling interval:", error)
+      }
+    }, 5000)
+
+    setPollingInterval(interval)
+  }
+
+  // Updated function to handle combined upload with async processing
   const handleCombinedUpload = async () => {
     if (!isSettingsComplete) {
       setShowSettingsAlert(true)
@@ -394,6 +543,7 @@ export default function Home() {
     setIsUploading(true)
     setProcessingStatus("creating-analyzer")
     setProcessingProgress(10)
+    setJobStatusMessage("Starting job...")
 
     try {
       // Parse the JSON from the editor
@@ -408,12 +558,9 @@ export default function Home() {
       formData.append("jsonFile", jsonFile)
       formData.append("videoUrl", videoUrl)
 
-      // Update status to processing video
-      setProcessingStatus("processing-video")
-      setProcessingProgress(30)
-
-      // Send the data to the Flask backend API
-      const response = await fetch(`${settings.baseUrl}/upload`, {
+      // Send the data to the Flask backend API to start the job
+      // Note: Backend needs to implement this endpoint to return a job ID immediately
+      const response = await fetch(`${settings.baseUrl}/upload/start`, {
         method: "POST",
         body: formData,
       })
@@ -423,39 +570,74 @@ export default function Home() {
         throw new Error(errorData.error || `Server responded with ${response.status}`)
       }
 
-      // Update status to indexing
-      setProcessingStatus("indexing")
-      setProcessingProgress(80)
-
+      // Get the job ID from the response
       const data = await response.json()
-      setJsonData(data)
+      const jobId = data.jobId
 
-      // Set status to completed
-      setProcessingStatus("completed")
-      setProcessingProgress(100)
-
-      toast({
-        title: "Processing Successful",
-        description: "Your analyzer has been created and the video has been processed.",
-      })
-
-      // Add the current video URL to the list of uploaded URLs if it's not already there
-      if (!uploadedVideoUrls.includes(videoUrl)) {
-        setUploadedVideoUrls((prev) => [...prev, videoUrl])
+      if (!jobId) {
+        throw new Error("No job ID returned from server")
       }
 
-      // Reset processing status after a delay
-      setTimeout(() => {
-        setProcessingStatus("idle")
-      }, 3000)
+      // Start polling for job status
+      startPollingJobStatus(jobId)
+
+      toast({
+        title: "Processing Started",
+        description: "Your video is being processed. You can continue using the application.",
+      })
     } catch (error) {
       console.error("Upload error:", error)
       setProcessingStatus("failed")
+      setJobStatusMessage("Failed to start processing")
 
       // Show detailed error information
       showErrorDetails(error, "upload")
+
+      // Reset job ID
+      setCurrentJobId(null)
     } finally {
       setIsUploading(false)
+    }
+  }
+
+  // Function to cancel the current job
+  const cancelCurrentJob = async () => {
+    if (!currentJobId) return
+
+    try {
+      // Call the cancel endpoint with the job ID
+      const response = await fetch(`${settings.baseUrl}/upload/cancel/${currentJobId}`, {
+        method: "POST",
+      })
+
+      if (!response.ok) {
+        throw new Error(`Server responded with ${response.status}`)
+      }
+
+      // Clear the polling interval
+      if (pollingInterval) {
+        clearInterval(pollingInterval)
+        setPollingInterval(null)
+      }
+
+      // Reset states
+      setCurrentJobId(null)
+      setProcessingStatus("idle")
+      setProcessingProgress(0)
+      setJobStatusMessage("")
+
+      toast({
+        title: "Processing Cancelled",
+        description: "The video processing job has been cancelled.",
+      })
+    } catch (error) {
+      console.error("Error cancelling job:", error)
+
+      toast({
+        title: "Cancel Failed",
+        description: "Failed to cancel the processing job. It may still be running.",
+        variant: "destructive",
+      })
     }
   }
 
@@ -741,6 +923,12 @@ export default function Home() {
 
   // Get status message based on processing status
   const getProcessingStatusMessage = () => {
+    // If we have a custom job status message, use that
+    if (jobStatusMessage) {
+      return jobStatusMessage
+    }
+
+    // Otherwise use the default messages
     switch (processingStatus) {
       case "creating-analyzer":
         return "Creating analyzer..."
@@ -1129,6 +1317,17 @@ export default function Home() {
                     View Error Details
                   </Button>
                 )}
+                {/* Add cancel button for active jobs */}
+                {currentJobId && processingStatus !== "completed" && processingStatus !== "failed" && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="text-slate-500 hover:text-slate-700 hover:bg-slate-100 p-0 h-auto"
+                    onClick={cancelCurrentJob}
+                  >
+                    Cancel
+                  </Button>
+                )}
               </div>
               <Progress value={processingProgress} className="h-2 w-full" />
             </div>
@@ -1136,14 +1335,14 @@ export default function Home() {
 
           <Button
             onClick={handleCombinedUpload}
-            disabled={!isJsonValid || !videoUrl || isUploading || !isSettingsComplete}
+            disabled={!isJsonValid || !videoUrl || isUploading || !isSettingsComplete || !!currentJobId}
             className="w-1/2"
             size="lg"
           >
             {isUploading ? (
               <>
                 <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                Processing...
+                Starting Process...
               </>
             ) : (
               <>
