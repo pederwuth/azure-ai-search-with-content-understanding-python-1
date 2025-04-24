@@ -10,6 +10,7 @@ Welcome! Content Understanding is an innovative solution designed to analyze and
 
 | File | Description |
 | --- | --- |
+| [search_with_multimodal_RAG.ipynb](notebooks/search_with_multimodal_RAG.ipynb) | Build a Retrieval Augmented Generation (RAG) solution by leveraging Azure AI's Content Understanding capabilities to extract unstructured data from diverse modalities, index it in Azure Search, and use Azure OpenAI for generating context-aware responses. |
 | [search_with_document_layout.ipynb](notebooks/search_with_document_layout.ipynb) | Use content understanding Layout for content extraction from Documents, and index the file in Azure search |
 | [search_with_visual_document.ipynb](notebooks/search_with_visual_document.ipynb) | Extract custom fields with content understanding API, and used it to index the file in Azure search |
 | [search_with_video.ipynb](notebooks/search_with_video.ipynb) | Extract custom fields with content understanding API, and used it to index the file in Azure search |
