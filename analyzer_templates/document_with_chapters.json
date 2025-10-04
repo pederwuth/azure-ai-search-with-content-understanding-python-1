@@ -1,62 +1,52 @@
 {
-  "apiVersion": "2024-12-01-preview",
-  "kind": "documentAnalysis",
-  "analysisSteps": [
-    {
-      "id": "preprocess",
-      "kind": "documentIntelligencePreprocess",
-      "modelId": "prebuilt-layout",
-      "features": ["ocrHighResolution"]
-    },
-    {
-      "id": "extract_chapters",
-      "kind": "languagePrompt",
-      "promptTemplate": "Analyze this document and extract comprehensive chapter information.\n\nFor each chapter, section, or major heading in the document, extract:\n\n1. **title**: The exact chapter/section title\n2. **number**: Chapter number or identifier (e.g., '1', 'Chapter 1', 'I', 'Section A')\n3. **level**: Hierarchy level (1 for main chapters, 2 for subsections, etc.)\n4. **summary**: A concise 2-3 sentence summary of the chapter's content\n5. **key_topics**: List of 3-5 main topics or themes covered\n6. **page_start**: Starting page number (integer)\n7. **page_end**: Ending page number (integer)\n\nDocument content:\n{content}\n\nProvide a structured list of all chapters and major sections.",
-      "modelId": "gpt-4o",
-      "inputVariables": {
-        "content": "preprocess.content.markdown"
+  "description": "Extract comprehensive chapter information from documents including hierarchy, summaries, and metadata.",
+  "scenario": "document",
+  "fieldSchema": {
+    "name": "DocumentWithChapters",
+    "description": "Document structure with chapters, sections, and metadata.",
+    "fields": {
+      "document_title": {
+        "type": "string",
+        "description": "The title of the entire document"
       },
-      "responseSchema": {
-        "type": "object",
-        "properties": {
-          "chapters": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "title": {"type": "string"},
-                "number": {"type": "string"},
-                "level": {"type": "integer"},
-                "summary": {"type": "string"},
-                "key_topics": {
-                  "type": "array",
-                  "items": {"type": "string"}
-                },
-                "page_start": {"type": "integer"},
-                "page_end": {"type": "integer"}
-              },
-              "required": ["title", "page_start", "level"]
+      "document_summary": {
+        "type": "string",
+        "description": "A brief summary of the entire document's content and purpose"
+      },
+      "chapters": {
+        "type": "array",
+        "description": "List of all chapters, sections, and major headings in the document",
+        "items": {
+          "type": "object",
+          "description": "Information about a single chapter or section",
+          "properties": {
+            "title": {
+              "type": "string",
+              "description": "The exact chapter or section title"
+            },
+            "number": {
+              "type": "string",
+              "description": "Chapter number or identifier (e.g., '1', 'Chapter 1', 'I', 'Section A')"
+            },
+            "level": {
+              "type": "string",
+              "description": "Hierarchy level - '1' for main chapters, '2' for subsections, '3' for sub-subsections, etc."
+            },
+            "summary": {
+              "type": "string",
+              "description": "A concise 2-3 sentence summary of this chapter's content and key points"
+            },
+            "key_topics": {
+              "type": "string",
+              "description": "Comma-separated list of 3-5 main topics, themes, or concepts covered in this chapter"
+            },
+            "page_range": {
+              "type": "string",
+              "description": "Page range for this chapter in format 'start-end' (e.g., '5-12')"
             }
-          },
-          "document_title": {"type": "string"},
-          "document_summary": {"type": "string"}
-        },
-        "required": ["chapters"]
+          }
+        }
       }
     }
-  ],
-  "outputMappings": [
-    {
-      "id": "chapters",
-      "path": "extract_chapters.chapters"
-    },
-    {
-      "id": "document_title",
-      "path": "extract_chapters.document_title"
-    },
-    {
-      "id": "document_summary",
-      "path": "extract_chapters.document_summary"
-    }
-  ]
+  }
 }
