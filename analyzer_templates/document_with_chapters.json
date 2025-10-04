@@ -1,48 +1,47 @@
 {
-  "description": "Extract comprehensive chapter information from documents including hierarchy, summaries, and metadata.",
+  "description": "Extract comprehensive chapter information from books, textbooks, and technical documents. This analyzer identifies ALL chapters throughout the entire document by analyzing the table of contents, section headings, and chapter markers.",
   "scenario": "document",
   "fieldSchema": {
     "name": "DocumentWithChapters",
-    "description": "Document structure with chapters, sections, and metadata.",
+    "description": "Complete document structure with ALL chapters, sections, and comprehensive metadata extracted from the entire document.",
     "fields": {
       "document_title": {
         "type": "string",
-        "description": "The title of the entire document"
+        "description": "Definition: The main title of the document as printed on the title page or cover, representing the primary identifying name of the work. Cues: Largest font on title page, appears before author names, may include subtitle separated by colon. Negative Cues: Running headers, chapter titles, edition statements."
       },
       "document_summary": {
         "type": "string",
-        "description": "A brief summary of the entire document's content and purpose"
+        "description": "Definition: A comprehensive 3-5 sentence summary of the entire document's content, purpose, target audience, and main themes based on analyzing the full text, table of contents, and chapter summaries. Cues: Overall themes present throughout chapters, stated objectives in preface/introduction, recurring concepts across sections. Negative Cues: Single chapter summaries, abstract snippets, marketing copy."
       },
       "chapters": {
         "type": "array",
-        "description": "List of all chapters, sections, and major headings in the document",
+        "description": "Definition: ALL chapter-level divisions detected throughout the entire document, including every numbered chapter, major section, and primary structural division from beginning to end. Extract every instance where a new chapter begins, as indicated in the table of contents and throughout the document body. A complete book typically contains 10-30 chapters that must ALL be extracted. Cues: Consistent chapter numbering patterns (Chapter 1, Chapter 2, etc.), prominent heading typography, new page starts, table of contents entries, section dividers. Negative Cues: Subsections within chapters, figure captions, running headers, appendix sections.",
         "items": {
           "type": "object",
-          "description": "Information about a single chapter or section",
           "properties": {
             "title": {
               "type": "string",
-              "description": "The exact chapter or section title"
+              "description": "Definition: The exact heading text of the chapter as displayed on the chapter opening page, without the chapter number prefix. Cues: Large heading style immediately following chapter number, title case formatting, prominent visual separation from body text, appears in table of contents. Negative Cues: Running headers, section headings within chapters, subtitle text."
             },
             "number": {
               "type": "string",
-              "description": "Chapter number or identifier (e.g., '1', 'Chapter 1', 'I', 'Section A')"
+              "description": "Definition: The numeric or Roman ordinal identifier of a chapter exactly as it appears in the document, marking the sequential position. Cues: Labels like 'Chapter 5', '5', 'Ch. 5', 'V', large typography above chapter title, bold or decorative style, appears in table of contents. Negative Cues: Section numbering (5.1, 5.2), figure numbers, page numbers."
             },
             "level": {
               "type": "string",
-              "description": "Hierarchy level - '1' for main chapters, '2' for subsections, '3' for sub-subsections, etc."
+              "description": "Definition: The structural depth of this heading within the document hierarchy represented as a string number. Cues: '1' for main chapters (Chapter 1, Chapter 2), '2' for major sections (1.1, 1.2), '3' for subsections (1.1.1). Use numbering patterns, indentation in table of contents, and typography to determine level. Negative Cues: Visual styling alone without structural significance."
             },
             "summary": {
               "type": "string",
-              "description": "A concise 2-3 sentence summary of this chapter's content and key points"
+              "description": "Definition: A detailed 2-4 sentence summary of this specific chapter's content, main arguments, key concepts taught, and learning objectives based on analyzing the chapter text. Cues: Introduction paragraphs, section headings within chapter, conclusion statements, learning objectives if stated. Negative Cues: Single sentence fragments, abstract keywords, unrelated content."
             },
             "key_topics": {
               "type": "string",
-              "description": "Comma-separated list of 3-5 main topics, themes, or concepts covered in this chapter"
+              "description": "Definition: Comma-separated list of 4-8 specific topics, concepts, technical terms, or themes that are central to this chapter's content. Cues: Bold terms, defined concepts, repeated terminology, section headings, index references. Format as: 'topic 1, topic 2, topic 3'. Negative Cues: Generic words, common verbs, passing mentions."
             },
             "page_range": {
               "type": "string",
-              "description": "Page range for this chapter in format 'start-end' (e.g., '5-12')"
+              "description": "Definition: The span of pages where this chapter appears, formatted as 'start-end'. Cues: Page number where chapter heading appears (start), page number before next chapter or end matter (end), dotted leaders in table of contents. Format: '23-45'. If only start known use 'start-', if unknown use empty string. Negative Cues: Figure page references, index page numbers, citation page numbers."
             }
           }
         }

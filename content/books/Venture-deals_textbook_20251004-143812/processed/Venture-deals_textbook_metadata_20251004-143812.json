@@ -1,0 +1,308 @@
+{
+  "document_title": "Venture Deals",
+  "document_summary": "Venture Deals is a practical guide to venture capital financings, term sheets, and the negotiation dynamics between entrepreneurs and investors. The book explains the key players, the economics and control provisions of term sheets, other contractual terms, and how venture capital funds operate. It also covers negotiation tactics, legal issues entrepreneurs should know, and provides sample documents and appendices as practical resources.",
+  "bookname": "Venture-deals",
+  "content_type": "textbook",
+  "timestamp": "20251004-143812",
+  "original_file": "Venture-deals.pdf",
+  "total_chapters": 22,
+  "total_figures": 16,
+  "total_characters": 640179,
+  "chapters": [
+    {
+      "title": "Foreword (Fred Wilson)",
+      "number": "",
+      "level": 1,
+      "page_start": 13,
+      "page_end": 14,
+      "summary": "Fred Wilson provides perspective on the opacity of venture capital terminology and the value of transparency for entrepreneurs. He endorses Venture Deals as a practical guide that would have accelerated his own early VC education.",
+      "key_topics": [
+        "VC industry history",
+        "importance of transparency",
+        "term sheet basics"
+      ]
+    },
+    {
+      "title": "Foreword (James Park)",
+      "number": "",
+      "level": 1,
+      "page_start": 15,
+      "page_end": 16,
+      "summary": "James Park recounts his early experiences raising venture capital and emphasizes the importance of preparation when meeting VCs. He praises the book for succinctly capturing practical fundraising lessons that benefit first-time entrepreneurs.",
+      "key_topics": [
+        "preparation for fundraising",
+        "founder experiences",
+        "practical lessons"
+      ]
+    },
+    {
+      "title": "Preface",
+      "number": "",
+      "level": 2,
+      "page_start": 17,
+      "page_end": 22,
+      "summary": "The authors describe their motivation for writing the book, intended audiences (from first-time founders to lawyers and VCs), and an overview of the book's structure. They also reference supplemental materials available online and explain the perspectives included throughout the text.",
+      "key_topics": [
+        "book purpose and audience",
+        "overview of contents",
+        "additional resources"
+      ]
+    },
+    {
+      "title": "Acknowledgments",
+      "number": "",
+      "level": 1,
+      "page_start": 23,
+      "page_end": 24,
+      "summary": "The authors thank contributors, colleagues, mentors, and reviewers who helped shape the book and assisted with research, commentary, and editorial support. They note specific individuals and firms who provided feedback and resources.",
+      "key_topics": [
+        "contributors",
+        "acknowledgements of reviewers",
+        "research sources"
+      ]
+    },
+    {
+      "title": "Introduction: The Art of the Term Sheet",
+      "number": "",
+      "level": 1,
+      "page_start": 1,
+      "page_end": 4,
+      "summary": "The introduction gives historical context for term sheets and outlines their evolution and practical importance in venture financings. It asserts that despite lengthy documents, the core negotiations boil down to economics and control.",
+      "key_topics": [
+        "history of term sheets",
+        "economics vs. control",
+        "role of term sheets in financings"
+      ]
+    },
+    {
+      "title": "The Players",
+      "number": "1",
+      "level": 2,
+      "page_start": 5,
+      "page_end": 18,
+      "summary": "Chapter 1 profiles the key participants in venture financings including entrepreneurs, venture capitalists, angels, lawyers, mentors, and syndicates. It explains roles, firm hierarchies, and how each player's incentives and behaviors influence deal outcomes.",
+      "key_topics": [
+        "entrepreneurs and founders",
+        "VC firm roles and hierarchy",
+        "other participants (angels, lawyers, mentors)"
+      ]
+    },
+    {
+      "title": "How to Raise Money",
+      "number": "2",
+      "level": 2,
+      "page_start": 19,
+      "page_end": 36,
+      "summary": "Chapter 2 walks through the fundraising process: deciding how much to raise, preparing fundraising and due diligence materials, finding the right and lead VCs, and closing the deal. It also covers strategies for creating competition among investors and how VCs evaluate opportunities.",
+      "key_topics": [
+        "fundraising strategy",
+        "due diligence materials",
+        "finding and selecting VCs"
+      ]
+    },
+    {
+      "title": "Overview of the Term Sheet",
+      "number": "3",
+      "level": 2,
+      "page_start": 37,
+      "page_end": 38,
+      "summary": "Chapter 3 provides a high-level framing of a term sheet and emphasizes the two central concepts entrepreneurs should focus on: economics and control. It sets the stage for the deeper dives into specific terms in subsequent chapters.",
+      "key_topics": [
+        "term sheet structure",
+        "economics",
+        "control provisions"
+      ]
+    },
+    {
+      "title": "Economic Terms of the Term Sheet",
+      "number": "4",
+      "level": 2,
+      "page_start": 39,
+      "page_end": 66,
+      "summary": "Chapter 4 details the economic terms found in term sheets, such as price, liquidation preferences, pay-to-play, vesting, option pools, exercise periods, and antidilution provisions. The chapter explains how these economic mechanisms affect founder and investor outcomes.",
+      "key_topics": [
+        "price and valuation",
+        "liquidation preference",
+        "vesting and option pools",
+        "antidilution"
+      ]
+    },
+    {
+      "title": "Control Terms of the Term Sheet",
+      "number": "5",
+      "level": 2,
+      "page_start": 67,
+      "page_end": 80,
+      "summary": "Chapter 5 covers governance and control terms, including board composition, protective provisions, drag-along rights, and conversion mechanics. It examines how contractual controls are used by investors to influence major corporate decisions.",
+      "key_topics": [
+        "board of directors",
+        "protective provisions",
+        "drag-along and conversion"
+      ]
+    },
+    {
+      "title": "Other Terms of the Term Sheet",
+      "number": "6",
+      "level": 2,
+      "page_start": 81,
+      "page_end": 99,
+      "summary": "Chapter 6 examines additional common provisions such as dividends, redemption rights, information and registration rights, rights of first refusal, co-sale agreements, founder restrictions, and no-shop clauses. It explains how these miscellaneous terms can materially affect the deal.",
+      "key_topics": [
+        "information and registration rights",
+        "rights of first refusal and co-sale",
+        "no-shop and founder obligations"
+      ]
+    },
+    {
+      "title": "Negotiation Tactics",
+      "number": "11",
+      "level": 2,
+      "page_start": 147,
+      "page_end": 192,
+      "summary": "Chapter 11 provides a primer on negotiating venture financings, covering preparation, game theory basics, negotiation styles, building leverage, and common mistakes. It offers practical advice on navigating term sheet discussions and working with lawyers.",
+      "key_topics": [
+        "negotiation preparation",
+        "game theory in negotiations",
+        "leverage and tactics",
+        "common pitfalls"
+      ]
+    },
+    {
+      "title": "Why Do Term Sheets Even Exist?",
+      "number": "15",
+      "level": 2,
+      "page_start": 197,
+      "page_end": 202,
+      "summary": "Chapter 15 explores the economic and contractual rationales for term sheets, discussing how they constrain behavior, align incentives, and reduce transaction and agency costs. The chapter adds theoretical context to the practical rules presented elsewhere in the book.",
+      "key_topics": [
+        "alignment of incentives",
+        "transaction and agency costs",
+        "reputation constraints"
+      ]
+    },
+    {
+      "title": "Legal Things Every Entrepreneur Should Know",
+      "number": "16",
+      "level": 2,
+      "page_start": 203,
+      "page_end": 210,
+      "summary": "Chapter 16 outlines essential legal topics for startups including intellectual property, employment issues, choice of incorporation state, corporate structure, accredited investor rules, 83(b) elections, and Section 409A valuations. It provides practical legal pointers founders commonly encounter.",
+      "key_topics": [
+        "intellectual property",
+        "employment and incorporation issues",
+        "83(b) elections and 409A valuations"
+      ]
+    },
+    {
+      "title": "Appendix A: Sample Term Sheet",
+      "number": "A",
+      "level": 2,
+      "page_start": 213,
+      "page_end": 222,
+      "summary": "Appendix A provides a sample term sheet for reference, illustrating the typical layout and language used in early-stage venture financings. The form helps readers see how the described provisions appear in practice.",
+      "key_topics": [
+        "sample term sheet",
+        "practical template",
+        "standard clause examples"
+      ]
+    },
+    {
+      "title": "Appendix B: Sample Letter of Intent",
+      "number": "B",
+      "level": 2,
+      "page_start": 223,
+      "page_end": 230,
+      "summary": "Appendix B offers a sample letter of intent (LOI) for acquisitions, showing the other common term-sheet-like document entrepreneurs may encounter. It outlines common clauses found in acquisition LOIs and how they differ from financing term sheets.",
+      "key_topics": [
+        "letter of intent",
+        "acquisition terms",
+        "differences from financing term sheets"
+      ]
+    },
+    {
+      "title": "Appendix C: Additional Resources",
+      "number": "C",
+      "level": 2,
+      "page_start": 231,
+      "page_end": 234,
+      "summary": "Appendix C lists further resources, references, and links for entrepreneurs and educators, including sample documents on the book's website. It serves as a roadmap to supplementary materials for classroom or deal use.",
+      "key_topics": [
+        "further reading",
+        "sample documents",
+        "online resources"
+      ]
+    },
+    {
+      "title": "Foreword to the First and Second Editions",
+      "number": "",
+      "level": 1,
+      "page_start": 235,
+      "page_end": 236,
+      "summary": "This section republishes or comments on earlier forewords from prior editions, providing historical perspective on the evolution of the book and its reception. It situates the current edition in the context of past versions.",
+      "key_topics": [
+        "edition history",
+        "earlier perspectives",
+        "book evolution"
+      ]
+    },
+    {
+      "title": "Glossary",
+      "number": "",
+      "level": 2,
+      "page_start": 237,
+      "page_end": 246,
+      "summary": "The glossary defines common venture capital and legal terms used throughout the book, serving as a quick reference for readers. It consolidates definitions of technical terms like liquidation preference, antidilution, and protective provisions.",
+      "key_topics": [
+        "term definitions",
+        "VC vocabulary",
+        "legal clause explanations"
+      ]
+    },
+    {
+      "title": "About the Authors",
+      "number": "",
+      "level": 2,
+      "page_start": 247,
+      "page_end": 248,
+      "summary": "This section provides brief biographies of the authors, Brad Feld and Jason Mendelson, summarizing their backgrounds as entrepreneurs, investors, and educators. It highlights their experience and qualifications to write on venture deals.",
+      "key_topics": [
+        "author bios",
+        "professional background",
+        "credibility"
+      ]
+    },
+    {
+      "title": "Index",
+      "number": "",
+      "level": 2,
+      "page_start": 249,
+      "page_end": 260,
+      "summary": "The index provides an alphabetized list of topics, names, and terms referenced in the book with page pointers for quick lookup. It helps readers locate discussions of specific clauses or concepts.",
+      "key_topics": [
+        "topic lookup",
+        "alphabetized entries",
+        "page references"
+      ]
+    },
+    {
+      "title": "Excerpt from Startup Communities",
+      "number": "",
+      "level": 2,
+      "page_start": 261,
+      "page_end": 262,
+      "summary": "The book concludes with an excerpt from Startup Communities, offering related insights on building startup ecosystems. It serves as complementary material for readers interested in community dynamics supporting entrepreneurial growth.",
+      "key_topics": [
+        "startup ecosystems",
+        "community building",
+        "complementary reading"
+      ]
+    }
+  ],
+  "job_folder": "../content/books/Venture-deals_textbook_20251004-143812",
+  "files": {
+    "input_pdf": "../content/books/Venture-deals_textbook_20251004-143812/input/Venture-deals.pdf",
+    "cache": "../content/books/Venture-deals_textbook_20251004-143812/processed/Venture-deals_textbook_cache_20251004-143812.json",
+    "markdown": "../content/books/Venture-deals_textbook_20251004-143812/processed/Venture-deals_textbook_markdown_20251004-143812.md",
+    "metadata": "../content/books/Venture-deals_textbook_20251004-143812/processed/Venture-deals_textbook_metadata_20251004-143812.json"
+  }
+}

@@ -11,11 +11,13 @@ This enhancement adds chapter extraction capabilities to the `search_with_visual
 The notebook uses a combination of services for optimal results:
 
 1. **Azure Content Understanding (Custom Document Analyzer)**
+
    - Extracts chapter structure and metadata
    - Uses `documentIntelligencePreprocess` with `prebuilt-layout` as foundation
    - Applies custom language prompts for chapter detection
 
 2. **Azure Document Intelligence (prebuilt-layout)**
+
    - Detects figure locations with precise bounding boxes
    - Provides span offsets for content insertion
    - Extracts document text as markdown
@@ -29,6 +31,7 @@ The notebook uses a combination of services for optimal results:
 ### `analyzer_templates/document_with_chapters.json`
 
 A custom Content Understanding analyzer template that:
+
 - Preprocesses documents with Document Intelligence `prebuilt-layout`
 - Extracts chapter information including:
   - Title
@@ -42,28 +45,35 @@ A custom Content Understanding analyzer template that:
 ## Modified Cells in Notebook
 
 ### New Cell: Document Analyzer Creation
+
 Creates a Content Understanding analyzer for chapter extraction using the custom template.
 
 ### Enhanced Cell: Document Analysis
+
 Now performs a 4-step process:
+
 1. **Extract chapters** with Content Understanding
 2. **Extract layout and figures** with Document Intelligence
 3. **Analyze figures** with Content Understanding
 4. **Save enhanced document** with all metadata
 
 ### Enhanced Cell: Load Cached Data
+
 Loads chapters and document metadata along with the main content.
 
 ### Enhanced Cell: Chunking
+
 - Enriches chunks with chapter metadata
 - Adds document-level metadata to all chunks
 - Shows statistics about chapter coverage
 
 ### Enhanced Cell: Indexing
+
 - Indexes enriched chunks with chapter metadata
 - Provides progress feedback
 
 ### Enhanced Cell: Retrieval
+
 - Displays chapter information for retrieved documents
 - Shows chapter title, topics, and page ranges
 
@@ -81,7 +91,7 @@ Each chunk can include the following metadata:
     "chapter_topics": str,       # Comma-separated key topics
     "page_start": int,           # Starting page number
     "page_end": int,             # Ending page number
-    
+
     # Document-level metadata
     "document_title": str,       # Overall document title
     "document_summary": str      # Overall document summary
@@ -121,6 +131,7 @@ for doc in results:
 ### Modify Chapter Extraction
 
 Edit `analyzer_templates/document_with_chapters.json` to:
+
 - Change the chapter detection prompt
 - Add additional fields (e.g., authors, dates, references)
 - Modify hierarchy levels
@@ -129,6 +140,7 @@ Edit `analyzer_templates/document_with_chapters.json` to:
 ### Adjust Chunking Strategy
 
 Modify the `find_chapter_for_chunk()` function to:
+
 - Use more sophisticated matching algorithms
 - Consider page numbers for chapter assignment
 - Handle nested sections differently
@@ -150,6 +162,7 @@ Modify the `find_chapter_for_chunk()` function to:
 ## Future Enhancements
 
 Potential improvements:
+
 - Automatic chapter-scoped filtering in queries
 - Chapter hierarchy visualization
 - Cross-chapter relationship detection
@@ -159,5 +172,6 @@ Potential improvements:
 ## Support
 
 For issues or questions about this feature, please refer to:
+
 - [Azure Content Understanding Documentation](https://learn.microsoft.com/en-us/azure/ai-services/content-understanding/)
 - [Azure Document Intelligence Documentation](https://learn.microsoft.com/en-us/azure/ai-services/document-intelligence/)

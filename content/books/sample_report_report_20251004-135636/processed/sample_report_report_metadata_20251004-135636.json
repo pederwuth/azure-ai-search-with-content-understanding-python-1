@@ -1,0 +1,212 @@
+{
+  "document_title": "UNITED STATES 2024 ARTICLE IV CONSULTATION - PRESS RELEASE; STAFF REPORT; AND STATEMENT BY THE EXECUTIVE DIRECTOR FOR THE UNITED STATES",
+  "document_summary": "This IMF package contains the 2024 Article IV consultation materials for the United States: a press release summarizing the Executive Board's assessment, the IMF staff report analyzing recent economic developments and policy, and supporting annexes and tables. The documents highlight the U.S. economy's strong post-pandemic performance and the ongoing disinflation, while emphasizing risks from rising public debt, inequality, and remaining financial sector vulnerabilities. They provide policy recommendations on monetary policy sequencing, a frontloaded fiscal consolidation, financial oversight strengthening, and trade and structural policies to bolster long-term resilience.",
+  "bookname": "sample_report",
+  "content_type": "report",
+  "timestamp": "20251004-135636",
+  "original_file": "sample_report.pdf",
+  "total_chapters": 14,
+  "total_figures": 60,
+  "total_characters": 386016,
+  "chapters": [
+    {
+      "title": "UNITED STATES 2024 ARTICLE IV CONSULTATION - PRESS RELEASE; STAFF REPORT; AND STATEMENT BY THE EXECUTIVE DIRECTOR FOR THE UNITED STATES",
+      "number": "",
+      "level": 1,
+      "page_start": 1,
+      "page_end": 1,
+      "summary": "The document's cover/title page announces the 2024 Article IV package for the United States, indicating included materials: a press release, staff report, informational annex, and a statement by the Executive Director. It provides publisher contact information and notes on IMF transparency policy.",
+      "key_topics": [
+        "Article IV package contents",
+        "IMF transparency and distribution",
+        "publication and contact details"
+      ]
+    },
+    {
+      "title": "IMF Executive Board Concludes 2024 Article IV Consultation with the United States",
+      "number": "",
+      "level": 1,
+      "page_start": 1,
+      "page_end": 3,
+      "summary": "The Executive Board concluded the Article IV consultation and summarized its views on the U.S. economy, noting strong post-pandemic performance, substantial job gains, and successful disinflation progress. Directors emphasized the need to monitor upside inflation risks, address large fiscal imbalances, strengthen financial oversight, and reverse trade-restrictive measures that could harm global and domestic growth.",
+      "key_topics": [
+        "economic assessment and outlook",
+        "inflation and monetary policy",
+        "fiscal imbalances and debt risks",
+        "financial stability reforms"
+      ]
+    },
+    {
+      "title": "FOR IMMEDIATE RELEASE",
+      "number": "",
+      "level": 2,
+      "page_start": 1,
+      "page_end": 2,
+      "summary": "A press-release style section providing a concise announcement of the Executive Board's conclusion of the Article IV consultation, with key takeaways on growth, employment, inflation, and policy responses. It frames recent macroeconomic performance, the Fed's tightening, and medium-term fiscal concerns.",
+      "key_topics": [
+        "press release summary",
+        "macroeconomic highlights",
+        "policy implications"
+      ]
+    },
+    {
+      "title": "Executive Board Assessment",
+      "number": "",
+      "level": 3,
+      "page_start": 2,
+      "page_end": 3,
+      "summary": "A summarized statement of Executive Directors' views, praising the U.S. economic rebound and disinflation while warning about upside inflation risks and mounting public debt. The assessment calls for monetary caution, frontloaded fiscal consolidation, stronger supervision of banks, and actions to preserve open trade and address inequality.",
+      "key_topics": [
+        "Board views on inflation and policy",
+        "fiscal consolidation recommendations",
+        "financial sector vulnerabilities",
+        "trade and inequality concerns"
+      ]
+    },
+    {
+      "title": "UNITED STATES (Staff Report header)",
+      "number": "",
+      "level": 2,
+      "page_start": 4,
+      "page_end": 37,
+      "summary": "The IMF staff report for the 2024 Article IV consultation provides a detailed analysis of U.S. economic developments, policy evaluation, and recommendations. It covers growth and labor market performance, disinflation dynamics, fiscal sustainability concerns, financial oversight issues, and trade and structural policy implications.",
+      "key_topics": [
+        "staff analysis and recommendations",
+        "macroeconomic performance",
+        "fiscal sustainability",
+        "financial regulation and macroprudential issues"
+      ]
+    },
+    {
+      "title": "KEY MESSAGES",
+      "number": "",
+      "level": 3,
+      "page_start": 4,
+      "page_end": 4,
+      "summary": "A concise summary of the staff report's central findings: robust activity and jobs, disinflation progress, prudent delay in cutting policy rates until inflation is sustainably back to target, urgent need for a sizable fiscal consolidation, and further financial sector reforms. It highlights distributional concerns such as rising poverty after pandemic-era supports ended.",
+      "key_topics": [
+        "activity and labor markets",
+        "inflation and monetary policy stance",
+        "fiscal adjustment urgency",
+        "distributional impacts"
+      ]
+    },
+    {
+      "title": "CONTENTS",
+      "number": "",
+      "level": 3,
+      "page_start": 3,
+      "page_end": 4,
+      "summary": "A table of contents that lists the major sections, boxes, tables, and annexes of the staff report along with associated page numbers. It outlines the structure of the report, including thematic sections like 'A Resilient Economy', fiscal chapters, risk assessments, and annexes on external sector and debt sustainability.",
+      "key_topics": [
+        "report structure",
+        "section and annex listings",
+        "tables and box references"
+      ]
+    },
+    {
+      "title": "A RESILIENT ECONOMY",
+      "number": "",
+      "level": 2,
+      "page_start": 5,
+      "page_end": 14,
+      "summary": "This chapter documents the post-pandemic strength of the U.S. economy, noting robust growth, strong job gains, and faster-than-expected recovery in incomes and output. It examines drivers on both the demand side (fiscal support, wealth effects, consumption) and supply side (labor supply, productivity), while flagging uneven distributional outcomes and pockets of household distress.",
+      "key_topics": [
+        "post-pandemic growth drivers",
+        "labor market recovery",
+        "household wealth and consumption",
+        "distributional and poverty concerns"
+      ]
+    },
+    {
+      "title": "A. What Has Underpinned the Post-Pandemic Strength in Demand?",
+      "number": "A",
+      "level": 3,
+      "page_start": 5,
+      "page_end": 11,
+      "summary": "A focused subsection that analyzes demand-side forces supporting the recovery, including large pandemic-era fiscal transfers, elevated household savings and wealth accumulation, improved corporate balance sheets, and favorable terms-of-trade developments from energy exports. The section explains how these factors sustained consumption and investment even as inflation rose and policy tightened.",
+      "key_topics": [
+        "fiscal impulse and transfers",
+        "household savings and wealth",
+        "corporate balance sheets",
+        "terms-of-trade effects"
+      ]
+    },
+    {
+      "title": "3. Rising household wealth has been a key determinant in supporting consumer demand",
+      "number": "3",
+      "level": 3,
+      "page_start": 6,
+      "page_end": 6,
+      "summary": "This subsection documents the substantial increase in household wealth since 2019\u2014driven by housing and equity price gains\u2014and its role in supporting consumption. It also notes that wealth gains were uneven across income groups and that poverty rose after pandemic supports ended.",
+      "key_topics": [
+        "housing price appreciation",
+        "equity market gains",
+        "wealth distribution",
+        "impact on consumption"
+      ]
+    },
+    {
+      "title": "5. Both households and corporates have been insulated from the impact of higher interest rates",
+      "number": "5",
+      "level": 3,
+      "page_start": 7,
+      "page_end": 7,
+      "summary": "This subsection argues the muted effect of higher policy rates on spending due to widespread fixed-rate borrowing and high holdings of short-duration assets, which reduced net interest burdens for corporates and limited the hit to households. It highlights how mortgage refinancing, increased deposits, and liquidity buffers have softened monetary transmission.",
+      "key_topics": [
+        "fixed-rate mortgages",
+        "corporate debt structure",
+        "monetary transmission",
+        "liquidity buffers"
+      ]
+    },
+    {
+      "title": "Box 1. Why Has Consumption Been So Strong?",
+      "number": "1",
+      "level": 3,
+      "page_start": 8,
+      "page_end": 8,
+      "summary": "A boxed analysis that explains drivers of the rapid rebound in private consumption, emphasizing accumulated savings, housing wealth gains, and the outsized contribution of higher-income households. The box provides quantification of the role of pandemic-era transfers and distributional dynamics.",
+      "key_topics": [
+        "consumption drivers",
+        "savings accumulation",
+        "housing wealth effects",
+        "income distribution"
+      ]
+    },
+    {
+      "title": "TABLES",
+      "number": "",
+      "level": 4,
+      "page_start": 40,
+      "page_end": 44,
+      "summary": "A grouped heading listing tables that provide detailed quantitative data used in the report, including selected economic indicators, balance of payments, government finances, banking surveys, and financial soundness metrics. These tables underpin the analysis and projections presented in the report.",
+      "key_topics": [
+        "economic indicators",
+        "fiscal and external tables",
+        "financial soundness data"
+      ]
+    },
+    {
+      "title": "ANNEXES",
+      "number": "",
+      "level": 4,
+      "page_start": 45,
+      "page_end": 77,
+      "summary": "A set of annexes that supplement the main report with technical assessments such as the Risk Assessment Matrix, Debt Sustainability Assessment, External Sector Assessment, implementation progress on past recommendations, and transnational corruption evaluation. These annexes provide methodological detail and deeper diagnostics.",
+      "key_topics": [
+        "risk assessment",
+        "debt sustainability",
+        "external sector",
+        "implementation progress"
+      ]
+    }
+  ],
+  "job_folder": "../content/books/sample_report_report_20251004-135636",
+  "files": {
+    "input_pdf": "../content/books/sample_report_report_20251004-135636/input/sample_report.pdf",
+    "cache": "../content/books/sample_report_report_20251004-135636/processed/sample_report_report_cache_20251004-135636.json",
+    "markdown": "../content/books/sample_report_report_20251004-135636/processed/sample_report_report_markdown_20251004-135636.md",
+    "metadata": "../content/books/sample_report_report_20251004-135636/processed/sample_report_report_metadata_20251004-135636.json"
+  }
+}
